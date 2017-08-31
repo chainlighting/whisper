@@ -1,0 +1,27 @@
+https://:8001 {
+    #tls self_signed
+    tls ../cert/server/server-cert.pem ../cert/server/server-key.pem
+    basicauth whisper transmit {
+        realm "for whisper basicAuthz"
+        /
+    }
+    root ./
+    gzip
+    index whisper.html
+    push whisper.html {
+        /js/quiet-emscripten.js
+        /js/quiet-emscripten.js.mem
+        /js/quiet-init.js
+        /js/quiet.js
+        /js/quiet-profiles.json
+        /js/receivetext.js
+        /js/sendtext.js
+        /js/scale.fix.js
+        /css/bootstrap.min.css
+        /css/github-dark.css
+        /css/styles.css
+    }
+    cors
+    expvar /stats
+    log stdout
+}

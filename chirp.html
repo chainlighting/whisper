@@ -1,0 +1,42 @@
+<!doctype html>
+<head>
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/styles.css"/>
+<link rel="stylesheet" href="css/github-dark.css"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+</head>
+
+<body>
+<div class="wrapper" id="container">
+  <header>
+    <h1>Chirp...Chirp</h1>
+  </header>  
+  
+  <div>
+  <canvas class="audio-pannel-wave"></canvas>
+  </div>
+
+  <section>
+  <div id="msg-window-wrap" class="form-group">
+    <div id="msg-window" class="chatroom-pannel-bd">
+    </div>
+  </div>
+  <div id="tapit" class="form-group">
+      <form id="say" action="#">
+          <input type="text" class="chatroom-pannel-in" placeholder="Input something..." />
+          
+          <button type="button" class="btn btn-default" style="width:100%" send-text-button >Send</button>
+      </form>
+  </div>
+  </section>
+
+  <footer>    
+  </footer>
+</div>
+
+<script type="text/javascript" src="js/util-ringbuf.js"></script>
+<script type="text/javascript" src="js/chirp-coder.js"></script>
+<script type="text/javascript" src="js/chirp-composer.js"></script>
+<script type="text/javascript" src="js/chirp-listener.js"></script>
+<script type="text/javascript" src="js/chirp-app.js"></script>
+</body>
