@@ -90,7 +90,7 @@ ChirpListener.prototype.onStream_ = function(stream) {
   // Setup audio graph.
   var input = audioContext.createMediaStreamSource(stream);
   var analyser = audioContext.createAnalyser();
-  analyser.fftSize = 4096;
+  analyser.fftSize = 2048;
   input.connect(analyser);
   // Create the frequency array.
   this.freqs = new Float32Array(analyser.frequencyBinCount);
