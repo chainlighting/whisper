@@ -1,44 +1,63 @@
-/*
-var ChirpComposer = require('../lib/sonic-socket.js');
-var ChirpListener = require('../lib/sonic-server.js');
-var SonicCoder = require('../lib/sonic-coder.js');
-*/
 var ALPHABET = ' abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~`!@#%&*()_-+={}[]:;\"\'|\\<>,.?/';
+var freqCodec = {
+  freqMin: 1000,
+  freqMax: 3000,
+  frameStartFreq: 3100,
+  frameEndFreq: 3120,
+  frameDataSeqFreqs: [3200,3220,3240,3260,3280,3300,3320,3340],
+  encodeDuration: 0.2
+};
+
 // Create an ultranet server.
-var ChirpListener = new ChirpListener({alphabet: ALPHABET, debug: true,freqMin:500,freqMax:3300,timeout:300,charDuration:0.2});
-//var ChirpListener = new ChirpListener({alphabet: ALPHABET, debug: true});
+var ChirpListener = new ChirpListener({
+  alphabet: ALPHABET,
+  debug: true,
+  freqMin: freqCodec.freqMin,
+  freqMax: freqCodec.freqMax,
+  timeout: 300,
+  charDuration: freqCodec.encodeDuration});
+
 // Create an ultranet socket.
-var ChirpComposer = new ChirpComposer({alphabet: ALPHABET,freqMin:500,freqMax:3300,charDuration:0.2});
-//var ChirpComposer = new ChirpComposer({alphabet: ALPHABET});
+var ChirpComposer = new ChirpComposer({
+  alphabet: ALPHABET,
+  freqMin: freqCodec.freqMin,
+  freqMax: freqCodec.freqMax,
+  charDuration: freqCodec.encodeDuration});
 
 
 var msgWindow = document.querySelector('#msg-window');
 var wrap = document.querySelector('#msg-window-wrap');
-var form = document.querySelector('form');
-var input = document.querySelector('input');
-var sendBtn = document.querySelector('[send-text-button]');
+var formInput = document.querySelector('#formInput');
+var inputText = document.querySelector('#inputMsgText');
+var waveStart = document.querySelector('#enableWaveTracking');
+var sendMsgBtn = document.querySelector('[send-text-button]');
 
 function init() {
   ChirpListener.start();
   ChirpListener.on('message', onIncomingChat);
-  form.addEventListener('submit', onSubmitForm);
-  sendBtn.addEventListener('click', onSubmitForm, false);
+  formInput.addEventListener('submit', onSubmitForm);
+  sendMsgBtn.addEventListener('click', onSubmitForm, false);
+  waveStart.addEventListener('click',onWaveStart,false);
+}
+
+function onWaveStart(e) {
+  ChirpListener.setDebug(waveStart.checked);
 }
 
 function onSubmitForm(e) {
   // Get contents of input element.
-  var message = input.value;
+  var message = inputText.value;
   // Send via oscillator.
   ChirpComposer.send(message);
   // Clear the input element.
-  input.value = '';
+  inputText.value = '';
   // Don't actually submit the form.
   e.preventDefault();
 }
 
 function onIncomingChat(message) {
   console.log('chat inbound.');
-  msgWindow.innerHTML += time() + ': ' + message + '<br/>';
+  msgWindow.innerHTML +='<code>' + time() + ': ' + message + '<br/></code>';
   // Scroll msgWindow to the bottom.
   msgWindow.scrollTop = msgWindow.scrollHeight;
 }

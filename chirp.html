@@ -7,32 +7,42 @@
 </head>
 
 <body>
-<div class="wrapper" id="container">
-  <header>
-    <h1>Chirp...Chirp</h1>
-  </header>  
+  <div class="wrapper" id="container">
+    <header>
+      <h1>Chirp...Chirp</h1>
+    </header>  
   
-  <div>
-  <canvas class="audio-pannel-wave"></canvas>
-  </div>
-
-  <section>
-  <div id="msg-window-wrap" class="form-group">
-    <div id="msg-window" class="chatroom-pannel-bd">
+    <div>
+      <canvas class="audio-pannel-wave" id="audio-wave-canvas"></canvas>
     </div>
-  </div>
-  <div id="tapit" class="form-group">
-      <form id="say" action="#">
-          <input type="text" class="chatroom-pannel-in" placeholder="Input something..." />
-          
-          <button type="button" class="btn btn-default" style="width:100%" send-text-button >Send</button>
-      </form>
-  </div>
-  </section>
 
-  <footer>    
-  </footer>
-</div>
+    <section>
+      <div id="msg-window-wrap" class="form-group">
+        <div id="msg-window" class="chatroom-pannel-bd"></div>
+      </div>
+      <div id="tapit" class="form-group">
+        <form id="formInput" action="#">
+          <div class="input-group">
+            <div class="input-group-addon">>></div>
+              <input type="text" class="form-control" id="inputMsgText" placeholder="Input something...">
+          </div>          
+        </form>
+        <p></p>
+        <div class="row">
+          <div class="col-xs-4 checkbox">
+            <label>
+              <input type="checkbox" id="enableWaveTracking" checked=true value=""> Wave Tracking
+            </label>
+          </div>
+          <div class="col-xs-8">
+            <button type="button" class="btn btn-primary form-control" send-text-button >Send</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer></footer>
+  </div>
 
 <script type="text/javascript" src="js/util-ringbuf.js"></script>
 <script type="text/javascript" src="js/chirp-coder.js"></script>

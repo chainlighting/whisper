@@ -68,12 +68,7 @@ ChirpListener.prototype.on = function(event, callback) {
 
 ChirpListener.prototype.setDebug = function(value) {
   this.debug = value;
-
-  var canvas = document.querySelector('canvas');
-  if (canvas) {
-    // Remove it.
-    canvas.parentElement.removeChild(canvas);
-  }
+  // just stop redraw the canvas,it make a snapshot
 };
 
 ChirpListener.prototype.fire_ = function(callback, arg) {
@@ -90,7 +85,7 @@ ChirpListener.prototype.onStream_ = function(stream) {
   // Setup audio graph.
   var input = audioContext.createMediaStreamSource(stream);
   var analyser = audioContext.createAnalyser();
-  analyser.fftSize = 2048;
+  analyser.fftSize = 4096;
   input.connect(analyser);
   // Create the frequency array.
   this.freqs = new Float32Array(analyser.frequencyBinCount);
@@ -98,6 +93,9 @@ ChirpListener.prototype.onStream_ = function(stream) {
   // Save the analyser for later.
   this.analyser = analyser;
   this.isRunning = true;
+  // Save freqence probe edge
+  this.freqMinIndex = this.freqToIndex(this.coder.freqMin);
+  this.freqMaxIndex = this.freqToIndex(this.coder.freqMax);
   // Do an FFT and check for inaudible peaks.
   this.raf_(this.loop.bind(this));
 };
@@ -112,12 +110,12 @@ ChirpListener.prototype.onStreamError_ = function(e) {
  */
 ChirpListener.prototype.getPeakFrequency = function() {
   // Find where to start.
-  var start = this.freqToIndex(this.coder.freqMin);
+  // var start = this.freqToIndex(this.coder.freqMin);
   // TODO: use first derivative to find the peaks, and then find the largest peak.
   // Just do a max over the set.
   var max = -Infinity;
   var index = -1;
-  for (var i = start; i < this.freqs.length; i++) {
+  for (var i = this.freqMinIndex; i < this.freqMaxIndex; i++) {
     if (this.freqs[i] > max) {
       max = this.freqs[i];
       index = i;
@@ -143,7 +141,7 @@ ChirpListener.prototype.loop = function() {
     var char = this.coder.freqToChar(freq);
     // DEBUG ONLY: Output the transcribed char.
     if (this.debug) {
-      console.log('Transcribed char: ' + char);
+      console.log('Transcribed char: ' + char + ' at ' + freq);
     }
     this.peakHistory.add(char);
     this.peakTimes.add(new Date());
@@ -163,7 +161,7 @@ ChirpListener.prototype.loop = function() {
   this.analysePeaks();
   // DEBUG ONLY: Draw the frequency response graph.
   if (this.debug) {
-    this.debugDraw_();
+    this.showWaveFreqs();
   }
   if (this.isRunning) {
     this.raf_(this.loop.bind(this));
@@ -234,54 +232,57 @@ ChirpListener.prototype.getLastRun = function() {
 };
 
 /**
- * DEBUG ONLY.
+ * Show Wave and Freqences
  */
-ChirpListener.prototype.debugDraw_ = function() {
-  var canvas = document.querySelector('canvas');
+ChirpListener.prototype.showWaveFreqs = function() {
+  var canvas = document.querySelector('canvas#audio-wave-canvas');
+  var i = 0;
+  var x_offset = 0;
+  var y_offset = 0;
+  var sliceWidth = 0;
+  var value = 0;
+  var freqSegStep = 1;
   
   if (!canvas) {
-    canvas = document.createElement('canvas');
-    document.body.appendChild(canvas);
+    return;
   }
-  //canvas.width = document.body.offsetWidth;
-  //canvas.height = 480;
+
   drawContext = canvas.getContext('2d');
   drawContext.fillStyle = 'rgb(102, 84, 139)';
   drawContext.fillRect(0, 0, canvas.width, canvas.height);
+  
   // Plot the frequency data.
-  for (var i = 0; i < this.freqs.length; i++) {
-    var value = this.freqs[i];
+  drawContext.fillStyle = 'rgb(231,255,214)';
+  sliceWidth = canvas.width/this.freqs.length;
+  freqSegStep = Math.round(Math.max(1,1/(sliceWidth)));
+  for (i = 0; i < this.freqs.length; i=i+freqSegStep) {
     // Transform this value (in db?) into something that can be plotted.
-    //var height = value + 300;
-    var height = ((value + 150)/150)*canvas.height;
-    var offset = canvas.height - height - 1;
-    var barWidth = canvas.width/this.freqs.length;
-    drawContext.fillStyle = 'rgb(231,255,214)';
-    drawContext.fillRect(i * barWidth, offset, 1, 1);
+    // 0.5 canvas area to draw freqences [canvas.height - ((value + 150)/150)*canvas.height*0.5]
+    y_offset = (0.5 - this.freqs[i]/300)*canvas.height;        
+    drawContext.fillRect(i * sliceWidth, y_offset, 1, 1);
   }  
 
+  // Plot wave
   drawContext.strokeStyle = 'rgb(131, 255, 148)';
   drawContext.beginPath();
 
-  var sliceWidth = canvas.width * 1.0 / this.auxFreqs.length;
-  var x = 0;
-
-  for (var i = 0; i < this.auxFreqs.length; i++) {
-
-    var v = this.auxFreqs[i] / 128.0;
-    //var y = v * canvas.height / 2 - 100;
-    var y = ((v * canvas.height / 2 - 50)/100)*canvas.height;
+  sliceWidth = canvas.width/this.auxFreqs.length;
+  freqSegStep = Math.round(Math.max(1,1/(sliceWidth)));
+  x_offset = 0;
+  for (i = 0; i < this.auxFreqs.length; i++) {
+    value = this.auxFreqs[i] / 128.0;
+    // 0.5 canvas area to draw wave
+    y_offset = 0.5*canvas.height*(1-value/2)
 
     if (i === 0) {
-      drawContext.moveTo(x, y);
+      drawContext.moveTo(x_offset, y_offset);
     } else {
-      drawContext.lineTo(x, y);
+      drawContext.lineTo(x_offset, y_offset);
     }
 
-    x += sliceWidth;
+    x_offset += sliceWidth;
   }
 
-  //drawContext.lineTo(canvas.width, canvas.height / 2);
   drawContext.stroke();
 };
 
@@ -294,8 +295,8 @@ ChirpListener.prototype.raf_ = function(callback) {
   if (isCrx) {
     setTimeout(callback, 1000/60);
   } else {
-    //requestAnimationFrame(callback);
-    setTimeout(callback, 1000/100);
+    requestAnimationFrame(callback);
+    //setTimeout(callback, 1000/100);
   }
 };
 
@@ -321,8 +322,6 @@ ChirpListener.prototype.restartServerIfSanityCheckFails = function() {
 }
 
 ChirpListener.prototype.restart = function() {
-  //this.stop();
-  //this.start();
   window.location.reload();
 };
 

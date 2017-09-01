@@ -27,7 +27,8 @@ ChirpComposer.prototype.send = function(input, opt_callback) {
     var char = input[i];
     var freq = this.coder.charToFreq(char);
     var time = audioContext.currentTime + this.charDuration * i;
-    this.scheduleToneAt(freq, time, this.charDuration);
+    //this.scheduleToneAt(freq, time, this.charDuration);
+    this.scheduleMultiTonesAt([freq],time,this.charDuration);
   }
 
   // If specified, callback after roughly the amount of time it would have
@@ -55,6 +56,34 @@ ChirpComposer.prototype.scheduleToneAt = function(freq, startTime, duration) {
   osc.connect(gainNode);
 
   osc.start(startTime);
+};
+
+ChirpComposer.prototype.scheduleMultiTonesAt = function(freqs, startTime, duration) {
+  var i = 0;
+  var oscs = [];
+
+  for(i = 0; i < freqs.length; i++) {
+    var gainNode = audioContext.createGain();
+    // Gain => Merger
+    gainNode.gain.value = 0;
+
+    gainNode.gain.setValueAtTime(0, startTime);
+    gainNode.gain.linearRampToValueAtTime(3, startTime + this.rampDuration);
+    gainNode.gain.setValueAtTime(3, startTime + duration - this.rampDuration);
+    gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
+
+    gainNode.connect(audioContext.destination);
+
+    var osc = audioContext.createOscillator();
+    osc.frequency.value = freqs[i];
+    osc.connect(gainNode);
+
+    oscs.push(osc);
+  }  
+
+  for(i = 0; i < oscs.length; i++) {
+    oscs[i].start(startTime);
+  }
 };
 
   return ChirpComposer;
