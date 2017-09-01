@@ -1,6 +1,6 @@
 https://:8001 {
     #tls self_signed
-    tls ../cert/server/server-cert.pem ../cert/server/server-key.pem
+    tls ../cert/server/server.cert.pem ../cert/server/server.key.pem
     basicauth whisper transmit {
         realm "for whisper basicAuthz"
         /

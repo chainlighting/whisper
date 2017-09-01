@@ -30,6 +30,7 @@ var wrap = document.querySelector('#msg-window-wrap');
 var formInput = document.querySelector('#formInput');
 var inputText = document.querySelector('#inputMsgText');
 var waveStart = document.querySelector('#enableWaveTracking');
+var waveCanvasWnd = document.querySelector('#wave-canvas-window');
 var sendMsgBtn = document.querySelector('[send-text-button]');
 
 function init() {
@@ -42,6 +43,11 @@ function init() {
 
 function onWaveStart(e) {
   ChirpListener.setDebug(waveStart.checked);
+  if(!waveStart.checked) {
+    waveCanvasWnd.style.display = "none";
+  } else {
+    waveCanvasWnd.style.display = "";
+  }
 }
 
 function onSubmitForm(e) {
