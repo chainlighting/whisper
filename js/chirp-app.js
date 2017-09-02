@@ -25,20 +25,38 @@ var ChirpComposer = new ChirpComposer({
   charDuration: freqCodec.encodeDuration});
 
 
-var msgWindow = document.querySelector('#msg-window');
+var msgWnd = document.querySelector('#msg-window');
 var wrap = document.querySelector('#msg-window-wrap');
 var formInput = document.querySelector('#formInput');
 var inputText = document.querySelector('#inputMsgText');
 var waveStart = document.querySelector('#enableWaveTracking');
 var waveCanvasWnd = document.querySelector('#wave-canvas-window');
 var sendMsgBtn = document.querySelector('[send-text-button]');
+var codeRainWnd = document.querySelector('#code-rain-window');
 
 function init() {
   ChirpListener.start();
   ChirpListener.on('message', onIncomingChat);
+  ChirpListener.on('validSample',onIncomingSample);
   formInput.addEventListener('submit', onSubmitForm);
   sendMsgBtn.addEventListener('click', onSubmitForm, false);
   waveStart.addEventListener('click',onWaveStart,false);
+
+  $("#ctrl-valid-sample-db").slider({
+    orientation: "horizontal",
+    range: "min",
+    max: 100,
+    min: -100,
+    value: -65,
+    slide: onCtrlValidSampleDb,
+    change: onCtrlValidSampleDb
+  });
+}
+
+function onCtrlValidSampleDb(e,ui) {
+  a = document.querySelector("#ctrl-valid-sample-db-label");
+  a.innerHTML = "TH: " + ui.value;
+  ChirpListener.setSampleThreshold(ui.value);
 }
 
 function onWaveStart(e) {
@@ -62,10 +80,15 @@ function onSubmitForm(e) {
 }
 
 function onIncomingChat(message) {
-  console.log('chat inbound.');
-  msgWindow.innerHTML +='<code>' + time() + ': ' + message + '<br/></code>';
-  // Scroll msgWindow to the bottom.
-  msgWindow.scrollTop = msgWindow.scrollHeight;
+  msgWnd.innerHTML +='<code>' + time() + ': ' + message + '<br/></code>';
+  // Scroll msgWnd to the bottom.
+  msgWnd.scrollTop = msgWnd.scrollHeight;
+}
+
+function onIncomingSample(message) {
+  codeRainWnd.innerHTML +='<code>' + message + '<br/></code>';
+  // Scroll msgWnd to the bottom.
+  codeRainWnd.scrollTop = codeRainWnd.scrollHeight;
 }
 
 function time() {

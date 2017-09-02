@@ -64,6 +64,9 @@ ChirpListener.prototype.on = function(event, callback) {
   if (event == 'character') {
     this.callbacks.character = callback;
   }
+  if (event == 'validSample') {
+    this.callbacks.validSample = callback;
+  }
 };
 
 ChirpListener.prototype.setDebug = function(value) {
@@ -104,6 +107,9 @@ ChirpListener.prototype.onStreamError_ = function(e) {
   console.error('Audio input error:', e);
 };
 
+ChirpListener.prototype.setSampleThreshold = function(v) {
+  this.peakThreshold = v;
+}
 /**
  * Given an FFT frequency analysis, return the peak frequency in a frequency
  * range.
@@ -142,6 +148,7 @@ ChirpListener.prototype.loop = function() {
     // DEBUG ONLY: Output the transcribed char.
     if (this.debug) {
       console.log('Transcribed char: ' + char + ' at ' + freq);
+      this.fire_(this.callbacks.validSample,char + '(' + Math.round(freq) + ')');
     }
     this.peakHistory.add(char);
     this.peakTimes.add(new Date());
@@ -153,6 +160,7 @@ ChirpListener.prototype.loop = function() {
       this.state = State.IDLE;
       if (this.debug) {
         console.log('Token', this.buffer, 'timed out');
+        this.fire_(this.callbacks.validSample,'Token: ' + this.buffer +' timed out')
       }
       this.peakTimes.clear();
     }

@@ -302,8 +302,16 @@ footer p + p {
   float: right;
 }
 
+.threshold-slider .ui-slider-range{
+  background: #8ae234;
+}
+
+.threshold-slider .ui-slider-handle{
+  background: #8ae234;
+}
+
 .chatroom-pannel-bd {
-  height: 240px;
+  height: 160px;
   background: #fff;
   overflow-y: auto;
   border:1px solid #ccc
