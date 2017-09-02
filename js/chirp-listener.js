@@ -147,7 +147,6 @@ ChirpListener.prototype.loop = function() {
     var char = this.coder.freqToChar(freq);
     // DEBUG ONLY: Output the transcribed char.
     if (this.debug) {
-      console.log('Transcribed char: ' + char + ' at ' + freq);
       this.fire_(this.callbacks.validSample,char + '(' + Math.round(freq) + ')');
     }
     this.peakHistory.add(char);
@@ -159,7 +158,6 @@ ChirpListener.prototype.loop = function() {
       // Last detection was over 300ms ago.
       this.state = State.IDLE;
       if (this.debug) {
-        console.log('Token', this.buffer, 'timed out');
         this.fire_(this.callbacks.validSample,'Token: ' + this.buffer +' timed out')
       }
       this.peakTimes.clear();
