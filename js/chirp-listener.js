@@ -241,7 +241,7 @@ ChirpListener.prototype.getLastRun = function() {
  * Show Wave and Freqences
  */
 ChirpListener.prototype.showWaveFreqs = function() {
-  var canvas = document.querySelector('canvas#audio-wave-canvas');
+  var canvas = document.querySelector('#audio-wave-canvas');
   var i = 0;
   var x_offset = 0;
   var y_offset = 0;
@@ -252,6 +252,10 @@ ChirpListener.prototype.showWaveFreqs = function() {
   if (!canvas) {
     return;
   }
+
+  // resize canvas width/heigth
+  canvas.width = $("#audio-wave-canvas").width();
+  canvas.height = $("#audio-wave-canvas").height();
 
   drawContext = canvas.getContext('2d');
   drawContext.fillStyle = 'rgb(102, 84, 139)';
