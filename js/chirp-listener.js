@@ -266,7 +266,16 @@ ChirpListener.prototype.showWaveFreqs = function() {
     // 0.5 canvas area to draw freqences [canvas.height - ((value + 150)/150)*canvas.height*0.5]
     y_offset = (0.5 - this.freqs[i]/300)*canvas.height;        
     drawContext.fillRect(i * sliceWidth, y_offset, 1, 1);
-  }  
+  }
+
+  // Plot Threshold line
+  drawContext.strokeStyle = 'rgb(231,255,214)';
+  drawContext.beginPath();
+  y_offset = (0.5 - this.peakThreshold/300)*canvas.height;
+  drawContext.moveTo(0,y_offset);
+  x_offset = canvas.width - 1;
+  drawContext.lineTo(x_offset,y_offset);
+  drawContext.stroke();
 
   // Plot wave
   drawContext.strokeStyle = 'rgb(131, 255, 148)';

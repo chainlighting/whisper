@@ -63,6 +63,7 @@ function onWaveStart(e) {
   ChirpListener.setDebug(waveStart.checked);
   if(!waveStart.checked) {
     waveCanvasWnd.style.display = "none";
+    codeRainWnd.innerHTML = "";
   } else {
     waveCanvasWnd.style.display = "";
   }
@@ -86,9 +87,12 @@ function onIncomingChat(message) {
 }
 
 function onIncomingSample(message) {
-  codeRainWnd.innerHTML +='<code>' + message + '<br/></code>';
-  // Scroll msgWnd to the bottom.
-  codeRainWnd.scrollTop = codeRainWnd.scrollHeight;
+  if(!waveStart.checked) {
+  } else {
+    codeRainWnd.innerHTML +='<code>' + message + '<br/></code>';
+    // Scroll msgWnd to the bottom.
+    codeRainWnd.scrollTop = codeRainWnd.scrollHeight;
+  }
 }
 
 function time() {
