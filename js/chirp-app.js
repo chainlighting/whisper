@@ -1,7 +1,7 @@
 var ALPHABET = ' abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~`!@#%&*()_-+={}[]:;\"\'|\\<>,.?/';
 var freqCodec = {
-  freqMin: 15000,
-  freqMax: 18000,
+  freqMin: 1200,
+  freqMax: 3000,
   frameStartFreq: 3100,
   frameEndFreq: 3120,
   frameDataSeqFreqs: [3200,3220,3240,3260,3280,3300,3320,3340],
