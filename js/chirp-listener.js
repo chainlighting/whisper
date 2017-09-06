@@ -54,7 +54,7 @@ ChirpListener.prototype.start = function() {
  */
 ChirpListener.prototype.stop = function() {
   this.isRunning = false;
-  this.track.stop();
+  //this.track.stop();
 };
 
 ChirpListener.prototype.on = function(event, callback) {
@@ -105,6 +105,13 @@ ChirpListener.prototype.onStream_ = function(stream) {
   // Do an FFT and check for inaudible peaks.
   this.raf_(this.loop.bind(this));
 };
+
+ChirpListener.prototype.setSampleRange = function(v) {
+  this.coder.freqMin = v[0];
+  this.coder.freqMax = v[1];
+  this.freqMinIndex = this.freqToIndex(this.coder.freqMin);
+  this.freqMaxIndex = this.freqToIndex(this.coder.freqMax);
+}
 
 ChirpListener.prototype.onStreamError_ = function(e) {
   console.error('Audio input error:', e);

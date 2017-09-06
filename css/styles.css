@@ -302,12 +302,17 @@ footer p + p {
   float: right;
 }
 
-.threshold-slider .ui-slider-range{
+#GC .slider-selection{
   background: #8ae234;
 }
 
-.threshold-slider .ui-slider-handle{
-  background: #8ae234;
+#GC .slider-handle{
+  background: green;
+}
+
+.slider.slider-horizontal{
+  width: 100%;
+  height: 15px;
 }
 
 .chatroom-pannel-bd {

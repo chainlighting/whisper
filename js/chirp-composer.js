@@ -18,6 +18,10 @@ function ChirpComposer(params) {
   this.rampDuration = params.rampDuration || 0.001;
 }
 
+ChirpComposer.prototype.setSampleRange = function(v) {
+  this.coder.freqMin = v[0];
+  this.coder.freqMax = v[1];
+}
 
 ChirpComposer.prototype.send = function(input, opt_callback) {
   // Surround the word with start and end characters.

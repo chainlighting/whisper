@@ -1,9 +1,9 @@
 <!doctype html>
 <head>
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="vendor/bootstrap/v3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="vendor/bootstrap-slider/css/bootstrap-slider.min.css">
 <link rel="stylesheet" href="css/github-dark.css">
-<link rel="stylesheet" href="jqueryui/1.10.4/css/jquery-ui.min.css">
+<link rel="stylesheet" href="css/styles.css">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 </head>
 
@@ -19,12 +19,26 @@
 
     <section>
       <div id="chirp-control-window" class="form-group">
-          <div class="row">
-            <div class="col-xs-2">
-              <label id="ctrl-valid-sample-db-label">TH:-65</label>
+          <div class="row" id="ctrl-setting">
+            <div class="col-xs-4" id="ctrl-setting-sample-db">
+              <!--label id="ctrl-setting-sample-db-label">TH: -65 </label-->
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button">Treshold</button>
+                </span>
+                <input type="text" class="form-control" id="ctrl-setting-sample-db-label" placeholder="-65">
+              </div>
+              <input type="text" data-slider-id="GC" id="ctrl-setting-sample-db-val" />
             </div>
-            <div class="col-xs-10">
-              <div id="ctrl-valid-sample-db" class="threshold-slider"></div>
+            <div class="col-xs-8" id="ctrl-setting-sample-freqs">
+              <!--label id="ctrl-setting-sample-freqs-label">FR: [1500-3500]Hz </label-->
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button">FRange</button>
+                </span>                
+                <input type="text" class="form-control" id="ctrl-setting-sample-freqs-label" placeholder="1500:3500">
+              </div>
+              <input type="text" data-slider-id="GC" id="ctrl-setting-sample-freqs-val" />
             </div>
           </div>
       </div>
@@ -39,21 +53,21 @@
         </div>
       </div>
       <div class="form-group">
-        <form id="formInput" action="#">
+        <form id="input-form" action="#">
           <div class="input-group">
             <div class="input-group-addon">>></div>
-            <input type="text" class="form-control" id="inputMsgText" placeholder="Input something...">
+            <input type="text" class="form-control" id="text-msg-input" placeholder="Input something...">
           </div>          
         </form>
         <p></p>
         <div class="row">
           <div class="col-xs-6 checkbox">
             <label>
-              <input type="checkbox" id="enableWaveTracking" checked=true value=""> Wave Tracking
+              <input type="checkbox" id="enable-wave-tracking" checked=true value=""> Wave Tracking
             </label>
           </div>
           <div class="col-xs-6">
-            <button type="button" class="btn btn-primary form-control" send-text-button >Send</button>
+            <button type="button" class="btn btn-primary form-control" id="send-text-button" >Send</button>
           </div>
         </div>
       </div>
@@ -62,8 +76,9 @@
     <footer></footer>
   </div>
 
-<script type="text/javascript" src="jquery/1.10.2/jquery.min.js"></script>
-<script type="text/javascript" src="jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script type="text/javascript" src="vendor/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="vendor/bootstrap-slider/bootstrap-slider.js"></script>
+<script type="text/javascript" src="vendor/loadash/loadash.3.10.1.min.js"></script>
 <script type="text/javascript" src="js/util-ringbuf.js"></script>
 <script type="text/javascript" src="js/chirp-coder.js"></script>
 <script type="text/javascript" src="js/chirp-composer.js"></script>
